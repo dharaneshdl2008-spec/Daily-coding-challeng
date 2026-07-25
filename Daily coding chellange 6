@@ -1,0 +1,60 @@
+class Solution {
+    public int singleNumber(int[] nums) {
+        Map<Integer,Integer>map=new HashMap<>();
+        for(int val:nums){
+            map.put(val,map.getOrDefault(val,0)+1);
+        }
+        for(Map.Entry<Integer,Integer>entrySet:map.entrySet()){
+            if(entrySet.getValue()==1)return entrySet.getKey();
+        }
+        return -1;
+    }
+}
+
+
+class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+
+        Node curr = head;
+
+        while (curr != null) {
+            Node copy = new Node(curr.val);
+
+            copy.next = curr.next;
+            curr.next = copy;
+
+            curr = copy.next;
+        }
+
+        curr = head;
+
+        while (curr != null) {
+            if (curr.random != null) {
+                curr.next.random = curr.random.next;
+            }
+
+            curr = curr.next.next;
+        }
+
+        Node dummy = new Node(0);
+        Node copyTail = dummy;
+
+        curr = head;
+
+        while (curr != null) {
+            Node copy = curr.next;
+
+            curr.next = copy.next;
+
+            copyTail.next = copy;
+            copyTail = copy;
+
+            curr = curr.next;
+        }
+
+        return dummy.next;
+    }
+}
