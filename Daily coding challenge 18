@@ -1,0 +1,158 @@
+class Solution {
+    public void pop(int n,int openP,int closeP,String s,List<String> res){
+        if(openP+closeP==n*2){
+            res.add(s);
+            return;
+        }
+        if(openP<n){
+            pop(n,openP+1,closeP,s+"(",res);
+        }
+        if(closeP<openP){
+            pop(n,openP,closeP+1,s+")",res);
+        }
+    }
+    public List<String> generateParenthesis(int n) {
+        List<String> res=new ArrayList<>();
+        pop(n,0,0,"",res);
+        return res;
+    }
+}
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public static ListNode merge(ListNode head1,ListNode head2){
+        ListNode mergedLL = new ListNode(-1);
+        ListNode temp = mergedLL;
+        while(head1 !=null && head2!=null){
+            if(head1.val <= head2.val){
+                temp.next=head1;
+                temp=temp.next;
+                head1=head1.next;
+            }
+            else{
+                temp.next=head2;
+                temp=temp.next;
+                head2=head2.next;
+            }
+        }
+        while(head1 != null){
+            temp.next=head1;
+            temp=temp.next;
+            head1=head1.next;
+        }
+        while(head2 != null){
+            temp.next=head2;
+            temp=temp.next;
+            head2=head2.next;
+        }
+        return mergedLL.next;
+    }
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while(fast.next != null && fast.next.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode right = slow.next;
+        slow.next = null;
+        ListNode newLeft = sortList(head);
+        ListNode newRight = sortList(right);
+        return merge(newLeft , newRight);
+    }
+    public ListNode mergeKLists(ListNode[] lists) {
+        int n = lists.length;
+        ListNode head = new ListNode(0);
+        ListNode temp = head;
+        for (int i=0; i < n; i++) {
+            temp.next = lists[i];
+            while(temp.next != null){
+                temp = temp.next;
+            }
+        }
+        return sortList(head.next);
+    }
+}
+
+
+
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode prev = dummy;
+
+        while (prev.next != null && prev.next.next != null) {
+            ListNode first = prev.next;
+            ListNode second = first.next;
+
+            first.next = second.next;
+            second.next = first;
+            prev.next = second;
+
+            prev = first;
+        }
+
+        return dummy.next;
+    }
+}
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode() {}
+ * ListNode(int val) { this.val = val; }
+ * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        
+        // Step 1: Verify if there are at least k nodes left to reverse 📐
+        ListNode tail = head;
+        for (int i = 0; i < k; i++) {
+            if (tail == null) {
+                return head; // Fewer than k nodes left, leave them untouched!
+            }
+            tail = tail.next;
+        }
+
+        // Step 2: Reverse the local k-group segment 🔀
+        ListNode newHead = reverse(head, tail);
+        
+        // Step 3: Recursively solve for the remaining chunks and connect links 🧵
+        head.next = reverseKGroup(tail, k);
+        
+        return newHead;
+    }
+
+    // Helper method to reverse nodes from 'curr' up to (but excluding) 'end'
+    public ListNode reverse(ListNode curr, ListNode end) {
+        ListNode prev = null;
+        while (curr != end) {
+            ListNode next = curr.next; // Save the next node reference
+            curr.next = prev;          // Reverse the current pointer
+            prev = curr;               // Advance prev
+            curr = next;               // Advance curr
+        }
+        return prev; // 'prev' becomes the new head of this reversed block
+    }
+}
